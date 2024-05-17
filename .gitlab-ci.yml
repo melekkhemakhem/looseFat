@@ -1,0 +1,91 @@
+<<<<<<< HEAD
+image: eclipse-temurin:17-jdk
+
+variables:
+  ANDROID_COMPILE_SDK: "34"
+  ANDROID_BUILD_TOOLS: "34.0.0"
+  ANDROID_SDK_TOOLS: "9477386"
+  ANDROID_HOME: "$CI_PROJECT_DIR/android-sdk-linux"
+
+before_script:
+  - apt-get --quiet update --yes
+  - apt-get --quiet install --yes wget unzip
+  - wget --quiet --output-document=cmdline-tools.zip https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_SDK_TOOLS}_latest.zip
+  - mkdir -p android-sdk-linux/cmdline-tools
+  - unzip -q cmdline-tools.zip -d android-sdk-linux/cmdline-tools
+  - mv android-sdk-linux/cmdline-tools/cmdline-tools android-sdk-linux/cmdline-tools/latest
+  - export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
+  - chmod +x ./gradlew
+  - chmod +x accept-licenses.sh
+  - ./accept-licenses.sh
+  - yes | sdkmanager --sdk_root=$ANDROID_HOME --licenses || true
+  - sdkmanager --sdk_root=$ANDROID_HOME "platforms;android-${ANDROID_COMPILE_SDK}" "platform-tools" "build-tools;${ANDROID_BUILD_TOOLS}"
+
+stages:
+  - setup
+  - linter
+  - compile
+  - build
+
+setup:
+  stage: setup
+  script:
+    - java -version
+
+linter:
+  stage: linter
+  script:
+    - ./gradlew checkstyle
+  artifacts:
+    paths:
+      - app/build/reports/checkstyle/
+  allow_failure: true
+
+compile:
+  stage: compile
+  script:
+    - ./gradlew assemble
+  artifacts:
+    paths:
+      - app/build/outputs/
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+
+=======
+image: openjdk:11-jdk
+
+
+variables:
+  ANDROID_COMPILE_SDK: "30"
+  ANDROID_BUILD_TOOLS: "30.0.2"
+  ANDROID_SDK_TOOLS: "6609375_latest"
+
+before_script:
+  - apt-get --quiet update --yes
+  - apt-get --quiet install --yes wget tar unzip lib32stdc++6 lib32z1
+  - wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_SDK_TOOLS}.zip
+  - unzip -d android-sdk-linux android-sdk.zip
+  - echo y | android-sdk-linux/tools/bin/sdkmanager "platforms;android-${ANDROID_COMPILE_SDK}" >/dev/null
+  - echo y | android-sdk-linux/tools/bin/sdkmanager "platform-tools" >/dev/null
+  - echo y | android-sdk-linux/tools/bin/sdkmanager "build-tools;${ANDROID_BUILD_TOOLS}" >/dev/null
+  - export ANDROID_HOME=$PWD/android-sdk-linux
+  - export PATH=$PATH:$PWD/android-sdk-linux/platform-tools/
+  - chmod +x ./gradlew
+
+stages:
+  - build
+
+>>>>>>> 735ea257adebaebf310df50cd74b628edbebe8f3
+build:
+  stage: build
+  script:
+    - ./gradlew assembleDebug
+  artifacts:
+    paths:
+      - app/build/outputs/
+<<<<<<< HEAD
+  when: manual
+=======
+>>>>>>> 735ea257adebaebf310df50cd74b628edbebe8f3
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push"'

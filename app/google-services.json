@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "801859236440",
+    "project_id": "androidapi-675b2",
+    "storage_bucket": "androidapi-675b2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:801859236440:android:e0cf69cd36121c324c502d",
+        "android_client_info": {
+          "package_name": "com.example.loosefatfast"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD9iy6ZLXbNmzlV2OxTR_u79EUI7bGZxnQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
